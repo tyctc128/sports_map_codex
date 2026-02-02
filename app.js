@@ -533,11 +533,13 @@ function updateList() {
 }
 
 function focusVenue(item) {
-  map.setView([item.lat, item.lng], 16, { animate: true });
   const marker = state.markers.get(item.id);
   if (marker) {
     closeAllTooltips();
-    marker.openTooltip();
+    clusterGroup.zoomToShowLayer(marker, () => {
+      map.setView([item.lat, item.lng], Math.max(map.getZoom(), 16), { animate: true });
+      marker.openTooltip();
+    });
   }
   showDetail(item);
 }
