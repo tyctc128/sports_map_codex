@@ -1,0 +1,144 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>臺北市運動場館地圖</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand__mark">OS</div>
+          <div>
+            <div class="brand__title">臺北市運動場館地圖</div>
+            <div class="brand__subtitle">OpenStreetMap + 即時篩選 + 附近清單</div>
+          </div>
+        </div>
+        <div class="search">
+          <div class="search__box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="searchInput" type="text" placeholder="搜尋場館 / 地址 / 行政區" autocomplete="off" />
+            <button id="clearSearch" title="清除搜尋">清除</button>
+          </div>
+          <div id="searchSuggest" class="search__suggest"></div>
+        </div>
+        <div class="actions">
+          <button id="locateBtn" class="btn btn--primary">
+            <i class="fa-solid fa-location-crosshairs"></i>
+            定位我
+          </button>
+          <button id="fallbackTaipei" class="btn btn--ghost">台北車站</button>
+        </div>
+      </header>
+
+      <div class="layout">
+        <aside class="panel panel--left">
+          <div class="panel__section">
+            <div class="panel__title">分類</div>
+            <div id="categoryFilters" class="filter-group"></div>
+          </div>
+
+          <div class="panel__section">
+            <div class="panel__title">行政區</div>
+            <div class="filter-actions">
+              <button id="districtAll" class="btn btn--ghost btn--sm">全選</button>
+              <button id="districtNone" class="btn btn--ghost btn--sm">全不選</button>
+            </div>
+            <div id="districtFilters" class="filter-group filter-group--columns"></div>
+          </div>
+
+          <div class="panel__section">
+            <div class="panel__title">附近條件</div>
+            <label class="toggle">
+              <input id="nearbyToggle" type="checkbox" />
+              <span>只看附近</span>
+            </label>
+            <div class="slider">
+              <div class="slider__row">
+                <span>半徑</span>
+                <span id="radiusValue">2 km</span>
+              </div>
+              <input id="radiusSlider" type="range" min="0.5" max="5" step="0.5" value="2" />
+            </div>
+          </div>
+
+          <div class="panel__section">
+            <div class="panel__title">視窗內結果</div>
+            <label class="toggle">
+              <input id="boundsToggle" type="checkbox" />
+              <span>只顯示目前視窗內</span>
+            </label>
+          </div>
+        </aside>
+
+        <main class="map-area">
+          <div id="map" class="map"></div>
+          <div id="mapHint" class="map-hint">
+            <i class="fa-solid fa-circle-info"></i>
+            定位失敗可改用搜尋或「台北車站」備援。
+          </div>
+        </main>
+
+        <aside class="panel panel--right">
+          <div id="detailPanel" class="detail">
+            <div class="detail__header">
+              <div>
+                <div id="detailTitle" class="detail__title">點擊地圖上的場館</div>
+                <div id="detailType" class="detail__type"></div>
+              </div>
+              <button id="detailClose" class="btn btn--ghost btn--sm">關閉</button>
+            </div>
+            <div id="detailBody" class="detail__body"></div>
+          </div>
+
+          <div class="panel__section">
+            <div class="panel__title">結果清單</div>
+            <div class="panel__meta">
+              <span id="resultCount">0 筆</span>
+              <button id="toggleList" class="btn btn--ghost btn--sm">收合</button>
+            </div>
+          </div>
+          <div id="resultList" class="result-list"></div>
+        </aside>
+      </div>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
